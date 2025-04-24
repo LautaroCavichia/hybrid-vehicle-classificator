@@ -1,0 +1,10 @@
+/GLIP
+result.jpg
+yolov8m.pt
+yolov8s.pt
+/__pycache__
+core/__pycache__
+models/classifiers/__pycache__
+models/detectors/__pycache__
+models/refiners/__pycache__
+pipeline/__pycache__
