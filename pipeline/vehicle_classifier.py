@@ -86,10 +86,10 @@ class VehicleClassifier:
                 classification = self.classifier.classify(image, detection)
                 
                 # Refine the classification if a refiner is available
-                if self.refiner:
-                    classification = self.refiner.refine(
-                        image, detection, classification, image.shape
-                    )
+                # if self.refiner:
+                #     classification = self.refiner.refine(
+                #         image, detection, classification, image.shape
+                #     )
                 
                 # Store the results
                 class_names.append(classification.class_name)

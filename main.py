@@ -12,11 +12,11 @@ import warnings
 # Import components
 from models.detectors.yolo_detector import YOLODetector
 from models.detectors.supervision_detector import SupervisionDetector
-from models.detectors.glip_detector import GLIPDetector
+from models.detectors.fastsam_detector import FastSAMDetector
 
 from models.classifiers.clip_classifier import CLIPClassifier
 from models.classifiers.dino_classifier import DINOClassifier
-from models.classifiers.glip_classifier import GLIPClassifier
+from models.classifiers.vit_classifier import ViTClassifier
 
 from models.refiners.heuristic_refiner import HeuristicRefiner
 
@@ -46,8 +46,8 @@ def create_pipeline(detector_name, detector_size, classifier_name, classifier_si
         detector = YOLODetector(model_size=detector_size)
     elif detector_name.lower() == "supervision":
         detector = SupervisionDetector(model_size=detector_size)
-    elif detector_name.lower() == "glip":
-        detector = GLIPDetector(model_size=detector_size)
+    elif detector_name.lower() == "fastsam":
+        detector = FastSAMDetector(model_size=detector_size)
     else:
         print(f"Unknown detector: {detector_name}, falling back to YOLOv8")
         detector = YOLODetector(model_size="medium")
@@ -57,8 +57,8 @@ def create_pipeline(detector_name, detector_size, classifier_name, classifier_si
         classifier = CLIPClassifier(model_size=classifier_size)
     elif classifier_name.lower() == "dino":
         classifier = DINOClassifier(model_size=classifier_size)
-    elif classifier_name.lower() == "glip":
-        classifier = GLIPClassifier(model_size=classifier_size)
+    elif classifier_name.lower() == "vit":
+        classifier = ViTClassifier(model_size=classifier_size)
     else:
         print(f"Unknown classifier: {classifier_name}, falling back to CLIP")
         classifier = CLIPClassifier(model_size="medium")
@@ -149,36 +149,21 @@ def run_benchmark(input_dir, output_dir, num_images=20):
         YOLODetector(model_size="small"),
         YOLODetector(model_size="medium"),
         SupervisionDetector(model_size="medium"),
+        FastSAMDetector(model_size="medium"),
     ]
     
-    # Add GLIP detector with try/except
-    try:
-        glip_detector = GLIPDetector(model_size="small")
-        if not getattr(glip_detector, 'use_fallback', True):
-            detectors.append(glip_detector)
-    except Exception as e:
-        print(f"GLIP detector not available for benchmarking: {e}")
     
     # Create classifiers to benchmark
     classifiers = [
         CLIPClassifier(model_size="small"),
         CLIPClassifier(model_size="medium"),
+        ViTClassifier(model_size="small"),
+        ViTClassifier(model_size="medium"),
+        DINOClassifier(model_size="small"),
+        DINOClassifier(model_size="medium"),
     ]
     
-    # Add DINO and GLIP classifiers with try/except
-    try:
-        dino_classifier = DINOClassifier(model_size="small")
-        classifiers.append(dino_classifier)
-    except Exception as e:
-        print(f"DINO classifier not available for benchmarking: {e}")
-    
-    try:
-        glip_classifier = GLIPClassifier(model_size="small") 
-        if not getattr(glip_classifier, 'use_fallback', True):
-            classifiers.append(glip_classifier)
-    except Exception as e:
-        print(f"GLIP classifier not available for benchmarking: {e}")
-    
+
     # Run the benchmark
     results = benchmark.run_benchmark(
         detectors=detectors,
@@ -207,11 +192,11 @@ def main():
                       help="Output directory or file path")
     
     # Model selection (for single and batch modes)
-    parser.add_argument("--detector", choices=["yolo", "supervision", "glip"], default="yolo",
+    parser.add_argument("--detector", choices=["yolo", "supervision", "fastsam"], default="yolo",
                       help="Detector to use")
-    parser.add_argument("--detector-size", choices=["nano", "small", "medium", "large", "xlarge"], default="medium",
+    parser.add_argument("--detector-size", choices=["small", "medium", "large"], default="medium",
                       help="Size of the detector model")
-    parser.add_argument("--classifier", choices=["clip", "dino", "glip"], default="clip",
+    parser.add_argument("--classifier", choices=["clip", "dino", "vit"], default="clip",
                       help="Classifier to use")
     parser.add_argument("--classifier-size", choices=["small", "medium", "large"], default="medium",
                       help="Size of the classifier model")

@@ -8,3 +8,9 @@ models/classifiers/__pycache__
 models/detectors/__pycache__
 models/refiners/__pycache__
 pipeline/__pycache__
+data/
+output/
+FastSAM-x.pt
+yolov8l-worldv2.pt
+yolov8m-worldv2.pt
+yolov8s-worldv2.pt
