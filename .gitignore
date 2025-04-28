@@ -14,3 +14,9 @@ FastSAM-x.pt
 yolov8l-worldv2.pt
 yolov8m-worldv2.pt
 yolov8s-worldv2.pt
+yolov12m.pt
+yolov12s.pt
+/benchmark_results_complete_small
+/benchmark_results_complete_medium
+/benchmark_results_complete
+/benchmark_results

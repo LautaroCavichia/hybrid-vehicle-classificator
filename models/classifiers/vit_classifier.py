@@ -45,8 +45,7 @@ class ViTClassifier(Classifier):
             "truck", 
             "bus", 
             "emergency vehicle", 
-            "no-vehicle",
-            "person"
+            "non-vehicle",
         ]
         
         # Initialize the model
@@ -103,14 +102,13 @@ class ViTClassifier(Classifier):
             "truck": ["truck", "pickup", "tractor", "semi"],
             "bus": ["bus", "trolleybus", "school bus"],
             "emergency vehicle": ["ambulance", "police", "fire engine", "fire truck"],
-            "person": ["person", "pedestrian", "human"],
-            "no-vehicle": []  # Default if nothing matches
+            "non-vehicle": ["person", "pedestrian", "human"],
         }
         
         # Create the mapping
         class_map = {}
         for i, class_name in enumerate(self.imagenet_classes):
-            mapped_class = "no-vehicle"  # Default
+            mapped_class = "non-vehicle"  # Default
             
             # Check each vehicle class for matching keywords
             for vehicle_class, keywords in class_keywords.items():
@@ -169,7 +167,7 @@ class ViTClassifier(Classifier):
         """
         # If it's a person detection, return person class directly
         if detection.is_person:
-            return ClassificationResult(class_name="person", confidence=0.99)
+            return ClassificationResult(class_name="non-vehicle", confidence=0.99)
         
         # Extract vehicle from image using bounding box
         box = detection.box
@@ -178,7 +176,7 @@ class ViTClassifier(Classifier):
         
         # Check if the cropped image has valid dimensions
         if cropped_img.size == 0 or cropped_img.shape[0] == 0 or cropped_img.shape[1] == 0:
-            return ClassificationResult(class_name="no-vehicle", confidence=0.9)
+            return ClassificationResult(class_name="non-vehicle", confidence=0.9)
         
         # Convert to PIL image for preprocessing
         pil_img = Image.fromarray(cv2.cvtColor(cropped_img, cv2.COLOR_BGR2RGB))
@@ -205,15 +203,15 @@ class ViTClassifier(Classifier):
                 
                 # Refine classification based on detection class ID
                 if class_id == 2:  # Car in COCO
-                    if mapped_class == "no-vehicle":
+                    if mapped_class == "non-vehicle":
                         mapped_class = "car"
                         confidence = max(0.6, confidence)
                 elif class_id == 5:  # Bus in COCO
-                    if mapped_class == "no-vehicle":
+                    if mapped_class == "non-vehicle":
                         mapped_class = "bus"
                         confidence = max(0.6, confidence)
                 elif class_id == 7:  # Truck in COCO
-                    if mapped_class == "no-vehicle":
+                    if mapped_class == "non-vehicle":
                         mapped_class = "truck"
                         confidence = max(0.6, confidence)
             

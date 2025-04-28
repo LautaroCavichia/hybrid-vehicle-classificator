@@ -283,3 +283,5 @@ class ModelBenchmark:
         plt.xticks(rotation=45, ha='right')
         plt.savefig(os.path.join(output_dir, 'class_distribution.png'), dpi=300)
         plt.close()
+        
+        

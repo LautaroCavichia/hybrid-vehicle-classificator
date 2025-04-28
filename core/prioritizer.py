@@ -113,7 +113,7 @@ class DefaultPrioritizer(ObjectPrioritizer):
             emergency_bonus = self.emergency_weight if class_name == "emergency vehicle" else 1.0
             
             # Skip non-vehicle/non-person items
-            if class_name == "no-vehicle" and not is_person:
+            if class_name == "non-vehicle" and not is_person:
                 score = 0
             else:
                 # Combined score (higher is better)

@@ -31,7 +31,7 @@ class DefaultVisualizer(Visualizer):
             "bus": (0, 255, 0),         # Green
             "emergency vehicle": (255, 0, 255),  # Purple
             "person": (255, 255, 0),    # Cyan
-            "no-vehicle": (128, 128, 128)  # Gray
+            "non-vehicle": (128, 128, 128)  # Gray
         }
         
         # Default color for unknown classes

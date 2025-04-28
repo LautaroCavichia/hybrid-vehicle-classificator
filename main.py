@@ -12,11 +12,15 @@ import warnings
 # Import components
 from models.detectors.yolo_detector import YOLODetector
 from models.detectors.supervision_detector import SupervisionDetector
-from models.detectors.fastsam_detector import FastSAMDetector
+from models.detectors.ssd_detector import SSDDetector
+from models.detectors.retinanet_detector import RetinaNetDetector
+from models.detectors.dino_detector import DINODetector
+from models.detectors.rtdetr_detector import RTDETRDetector
 
 from models.classifiers.clip_classifier import CLIPClassifier
-from models.classifiers.dino_classifier import DINOClassifier
+from models.classifiers.owlvit_classifier import DINOClassifier
 from models.classifiers.vit_classifier import ViTClassifier
+from models.classifiers.convnext_classifier import ConvNeXtClassifier
 
 from models.refiners.heuristic_refiner import HeuristicRefiner
 
@@ -46,8 +50,14 @@ def create_pipeline(detector_name, detector_size, classifier_name, classifier_si
         detector = YOLODetector(model_size=detector_size)
     elif detector_name.lower() == "supervision":
         detector = SupervisionDetector(model_size=detector_size)
-    elif detector_name.lower() == "fastsam":
-        detector = FastSAMDetector(model_size=detector_size)
+    elif detector_name.lower() == "ssd":
+        detector = SSDDetector(model_size=detector_size)
+    elif detector_name.lower() == "retinanet":
+        detector = RetinaNetDetector(model_size=detector_size)
+    elif detector_name.lower() == "dino":
+        detector = DINODetector(model_size=detector_size)
+    elif detector_name.lower() == "rt":
+        detector = RTDETRDetector(model_size=detector_size)
     else:
         print(f"Unknown detector: {detector_name}, falling back to YOLOv8")
         detector = YOLODetector(model_size="medium")
@@ -55,8 +65,8 @@ def create_pipeline(detector_name, detector_size, classifier_name, classifier_si
     # Initialize classifier
     if classifier_name.lower() == "clip":
         classifier = CLIPClassifier(model_size=classifier_size)
-    elif classifier_name.lower() == "dino":
-        classifier = DINOClassifier(model_size=classifier_size)
+    elif classifier_name.lower() == "convnext":
+        classifier = ConvNeXtClassifier(model_size=classifier_size)
     elif classifier_name.lower() == "vit":
         classifier = ViTClassifier(model_size=classifier_size)
     else:
@@ -149,7 +159,6 @@ def run_benchmark(input_dir, output_dir, num_images=20):
         YOLODetector(model_size="small"),
         YOLODetector(model_size="medium"),
         SupervisionDetector(model_size="medium"),
-        FastSAMDetector(model_size="medium"),
     ]
     
     
@@ -192,11 +201,11 @@ def main():
                       help="Output directory or file path")
     
     # Model selection (for single and batch modes)
-    parser.add_argument("--detector", choices=["yolo", "supervision", "fastsam"], default="yolo",
+    parser.add_argument("--detector", choices=["yolo", "supervision", "ssd", "retinanet", "dino", "rt"], default="yolo",
                       help="Detector to use")
     parser.add_argument("--detector-size", choices=["small", "medium", "large"], default="medium",
                       help="Size of the detector model")
-    parser.add_argument("--classifier", choices=["clip", "dino", "vit"], default="clip",
+    parser.add_argument("--classifier", choices=["clip", "convnext", "vit"], default="clip",
                       help="Classifier to use")
     parser.add_argument("--classifier-size", choices=["small", "medium", "large"], default="medium",
                       help="Size of the classifier model")

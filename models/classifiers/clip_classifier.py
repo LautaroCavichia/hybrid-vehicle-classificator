@@ -45,8 +45,7 @@ class CLIPClassifier(Classifier):
             "truck", 
             "bus", 
             "emergency vehicle", 
-            "no-vehicle",
-            "person"  # Additional class for consistency
+            "non-vehicle",
         ]
         
         # Use GPU if available
@@ -95,13 +94,11 @@ class CLIPClassifier(Classifier):
                 "a first responder vehicle with flashing lights",
                 "an emergency response vehicle"
             ],
-            "no-vehicle": [
+            "non-vehicle": [
                 "a scene without any vehicles",
                 "an empty street or road",
                 "a background without any cars or vehicles",
                 "a non-vehicle object",
-            ],
-            "person": [
                 "a person walking or standing",
                 "a pedestrian on the sidewalk",
                 "a human figure",
@@ -148,7 +145,7 @@ class CLIPClassifier(Classifier):
         """
         # If it's a person detection, return person class directly
         if detection.is_person:
-            return ClassificationResult(class_name="person", confidence=0.99)
+            return ClassificationResult(class_name="non-vehicle", confidence=0.99)
         
         # Extract vehicle from image using bounding box
         box = detection.box
@@ -157,7 +154,7 @@ class CLIPClassifier(Classifier):
         
         # Check if the cropped image has valid dimensions
         if cropped_img.size == 0 or cropped_img.shape[0] == 0 or cropped_img.shape[1] == 0:
-            return ClassificationResult(class_name="no-vehicle", confidence=0.9)
+            return ClassificationResult(class_name="non-vehicle", confidence=0.9)
         
         # Convert to PIL image for CLIP
         pil_img = Image.fromarray(cv2.cvtColor(cropped_img, cv2.COLOR_BGR2RGB))

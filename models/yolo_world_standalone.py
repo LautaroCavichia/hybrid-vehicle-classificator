@@ -144,7 +144,7 @@ class YOLOWorldVehicleSystem:
                     if detection_only:
                         # Basic mapping for standard detection
                         if "person" in original_class.lower():
-                            class_name = "person"
+                            class_name = "non-vehicle"
                         elif any(x in original_class.lower() for x in ["car", "sedan", "coupe", "suv"]):
                             class_name = "car"
                         elif "van" in original_class.lower():
@@ -164,7 +164,7 @@ class YOLOWorldVehicleSystem:
                         if class_id < len(self.class_prompts):
                             prompt = self.class_prompts[class_id]
                             if "person" in prompt:
-                                class_name = "person"
+                                class_name = "non-vehicle"
                             elif "car:" in prompt:
                                 class_name = "car"
                             elif "van:" in prompt:
@@ -183,7 +183,7 @@ class YOLOWorldVehicleSystem:
                             # If class_id is out of range of our prompts
                             # Fall back to original class name mapping
                             if "person" in original_class.lower():
-                                class_name = "person"
+                                class_name = "non-vehicle"
                             elif "car" in original_class.lower():
                                 class_name = "car"
                             elif "van" in original_class.lower():
@@ -208,8 +208,8 @@ class YOLOWorldVehicleSystem:
                         'class_name': class_name,
                         'original_class': original_class,
                         'confidence': confidence,
-                        'is_person': class_name == "person",
-                        'is_vehicle': class_name != "person" and class_name != "unknown"
+                        'is_person': class_name == "non-vehicle",
+                        'is_vehicle': class_name != "non-vehicle" and class_name != "unknown"
                     })
         
         # Create annotated image
@@ -299,7 +299,7 @@ class YOLOWorldVehicleSystem:
         """
         # Define colors for different classes
         colors = {
-            "person": (255, 0, 255),     # Magenta
+            "non-vehicle": (255, 0, 255),     # Magenta
             "car": (0, 0, 255),          # Red
             "van": (0, 140, 255),        # Orange
             "truck": (0, 69, 255),       # Orange-red

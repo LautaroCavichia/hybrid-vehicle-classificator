@@ -44,7 +44,7 @@ class HeuristicRefiner(ClassificationRefiner):
         """
         # Handle special cases that don't need refinement
         if classification.class_name == "person" or detection.is_person:
-            return ClassificationResult(class_name="person", confidence=0.99)
+            return ClassificationResult(class_name="non-vehicle", confidence=0.99)
             
         # Get the current class and confidence
         current_class = classification.class_name
@@ -76,7 +76,7 @@ class HeuristicRefiner(ClassificationRefiner):
             return ClassificationResult(class_name="bus", confidence=0.85)
             
         elif class_id == 3 and area < 10000:  # Small motorcycle
-            return ClassificationResult(class_name="no-vehicle", confidence=0.8)
+            return ClassificationResult(class_name="non-vehicle", confidence=0.8)
         
         # REFINEMENT RULE 2: Size-based rules
         if area < self.car_max_area:
